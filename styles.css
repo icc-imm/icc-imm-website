@@ -1578,6 +1578,8 @@ body.cookie-modal-open {
   .primary-nav .button {
     margin: 0 0 0 0.4rem;
     font-size: 0.75rem;
+    line-height: 1.25;
+    text-align: center;
   }
 
   .hero__grid {
