@@ -424,16 +424,30 @@ p {
 }
 
 .hero h1 {
+  max-width: 780px;
   margin-bottom: 1.6rem;
   color: var(--white);
   font-size: clamp(2.8rem, 8vw, 5.8rem);
   font-weight: 780;
+  line-height: 1.02;
   letter-spacing: -0.065em;
 }
 
-.hero h1 span {
+.hero-title__primary,
+.hero-title__secondary {
+  display: block;
+}
+
+.hero h1 .hero-title__primary {
+  color: inherit;
+  font-size: 1em;
+  letter-spacing: inherit;
+}
+
+.hero h1 .hero-title__secondary {
   color: var(--gold-400);
-  font-size: 0.63em;
+  font-size: clamp(1.5rem, 7.4vw, 3.65rem);
+  line-height: 1.08;
   letter-spacing: -0.04em;
 }
 
