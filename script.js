@@ -2,8 +2,14 @@ import { libraryArticles } from "./libraryArticles.js";
 
 const menuToggle = document.querySelector(".menu-toggle");
 const primaryNav = document.querySelector(".primary-nav");
-const navLinks = [...document.querySelectorAll('.primary-nav a[href^="#"]')];
+const navLinks = [
+  ...document.querySelectorAll('.primary-nav a[href^="#"]:not(.button)'),
+];
+const mobileMenuLinks = [
+  ...document.querySelectorAll('.primary-nav a[href^="#"]'),
+];
 const backToTop = document.querySelector(".back-to-top");
+const scrollToTopControls = [...document.querySelectorAll("[data-scroll-top]")];
 const currentYear = document.querySelector("#current-year");
 const committeeGrid = document.querySelector("#committee-members");
 const presentationsGrid = document.querySelector("#imm-presentations");
@@ -285,12 +291,30 @@ if (menuToggle && primaryNav) {
     document.body.classList.toggle("menu-open", !isOpen);
   });
 
-  navLinks.forEach((link) => link.addEventListener("click", closeMenu));
+  mobileMenuLinks.forEach((link) => link.addEventListener("click", closeMenu));
 
   window.addEventListener("resize", () => {
     if (window.innerWidth >= 1080) closeMenu();
   });
 }
+
+const scrollToAbsoluteTop = () => {
+  const finishAtPageTop = () => {
+    if (window.scrollY !== 0) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  };
+
+  window.addEventListener("scrollend", finishAtPageTop, { once: true });
+  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+
+  // Fallback for browsers that do not support the scrollend event.
+  window.setTimeout(finishAtPageTop, 900);
+};
+
+scrollToTopControls.forEach((control) => {
+  control.addEventListener("click", scrollToAbsoluteTop);
+});
 
 if (backToTop) {
   const updateBackToTop = () => {
@@ -299,45 +323,95 @@ if (backToTop) {
 
   window.addEventListener("scroll", updateBackToTop, { passive: true });
   updateBackToTop();
-
-  backToTop.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
 }
 
 if (currentYear) {
   currentYear.textContent = new Date().getFullYear();
 }
 
-// Highlight the navigation item that corresponds to the section in view.
-const observedSections = navLinks
-  .map((link) => document.querySelector(link.getAttribute("href")))
-  .filter(Boolean);
+// Keep exactly one navigation item active as the page scrolls.
+const navigationTargets = navLinks
+  .map((link) => ({
+    link,
+    target: document.querySelector(link.getAttribute("href")),
+  }))
+  .filter(({ target }) => target);
 
-if ("IntersectionObserver" in window) {
-  const sectionObserver = new IntersectionObserver(
-    (entries) => {
-      const visibleEntry = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+let activeNavigationId = "";
+let scrollSpyFrame = null;
+let lockedNavigationId = "";
+let navigationUnlockTimer = null;
 
-      if (!visibleEntry) return;
+const setActiveNavigation = (id) => {
+  if (!id || id === activeNavigationId) return;
+  activeNavigationId = id;
 
-      navLinks.forEach((link) => {
-        const isActive = link.getAttribute("href") === `#${visibleEntry.target.id}`;
-        link.classList.toggle("active", isActive);
-        if (isActive) {
-          link.setAttribute("aria-current", "location");
-        } else {
-          link.removeAttribute("aria-current");
-        }
-      });
-    },
-    {
-      rootMargin: "-25% 0px -60%",
-      threshold: [0.05, 0.25, 0.5],
+  navigationTargets.forEach(({ link, target }) => {
+    const isActive = target.id === id;
+    link.classList.toggle("active", isActive);
+    if (isActive) {
+      link.setAttribute("aria-current", "location");
+    } else {
+      link.removeAttribute("aria-current");
     }
-  );
+  });
+};
 
-  observedSections.forEach((section) => sectionObserver.observe(section));
-}
+const updateActiveNavigation = () => {
+  scrollSpyFrame = null;
+  if (!navigationTargets.length) return;
+  if (lockedNavigationId) {
+    setActiveNavigation(lockedNavigationId);
+    return;
+  }
+
+  const headerHeight = document.querySelector(".site-header")?.offsetHeight ?? 0;
+  const markerPosition = window.scrollY + headerHeight + 32;
+  const targetsByPosition = navigationTargets
+    .map((item) => ({
+      ...item,
+      top: item.target.getBoundingClientRect().top + window.scrollY,
+    }))
+    .sort((a, b) => a.top - b.top);
+
+  const passedTargets = targetsByPosition.filter(({ top }) => top <= markerPosition);
+  let activeTarget = passedTargets.at(-1) ?? targetsByPosition[0];
+
+  // Some navigation targets share the same row. Preserve the clicked item in that group.
+  const samePositionTargets = targetsByPosition.filter(
+    ({ top }) => Math.abs(top - activeTarget.top) < 4
+  );
+  const currentTargetAtPosition = samePositionTargets.find(
+    ({ target }) => target.id === activeNavigationId
+  );
+  if (currentTargetAtPosition) activeTarget = currentTargetAtPosition;
+
+  const documentBottom = window.scrollY + window.innerHeight;
+  if (documentBottom >= document.documentElement.scrollHeight - 2) {
+    activeTarget = targetsByPosition.at(-1);
+  }
+
+  setActiveNavigation(activeTarget.target.id);
+};
+
+const scheduleScrollSpy = () => {
+  if (scrollSpyFrame !== null) return;
+  scrollSpyFrame = window.requestAnimationFrame(updateActiveNavigation);
+};
+
+navigationTargets.forEach(({ link, target }) => {
+  link.addEventListener("click", () => {
+    lockedNavigationId = target.id;
+    setActiveNavigation(target.id);
+    window.clearTimeout(navigationUnlockTimer);
+    navigationUnlockTimer = window.setTimeout(() => {
+      lockedNavigationId = "";
+      updateActiveNavigation();
+    }, 1200);
+  });
+});
+
+window.addEventListener("scroll", scheduleScrollSpy, { passive: true });
+window.addEventListener("resize", scheduleScrollSpy);
+window.addEventListener("load", updateActiveNavigation);
+updateActiveNavigation();
