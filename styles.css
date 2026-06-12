@@ -1547,9 +1547,14 @@ body.cookie-modal-open {
 
   .primary-nav > a:not(.button) {
     position: relative;
-    padding: 0.7rem 0;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 0;
     border: 0;
     font-size: clamp(0.7rem, 0.8vw, 0.82rem);
+    line-height: 1.35;
+    text-align: center;
   }
 
   .primary-nav > a:not(.button)::after {
