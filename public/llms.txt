@@ -1,0 +1,30 @@
+# ICC IMM
+
+Official website: https://icc-imm-website.vercel.app/
+
+ICC IMM stands for ICC Institute of Management, Marketing & Leadership. It is an initiative of ICC Hellas focused on management, marketing, leadership, business research, education, institutional dialogue, strategic partnerships and international business standards.
+
+Key topics:
+- ICC IMM
+- ICC Institute of Management, Marketing & Leadership
+- ICC Hellas Institute
+- management education
+- marketing and competitiveness
+- leadership development
+- ICC Academy cooperation
+- Greek chambers of commerce network
+- business research and policy notes
+
+Important pages:
+- Home and institute overview: https://icc-imm-website.vercel.app/
+- Digital Library: https://icc-imm-website.vercel.app/#library
+- Institutional reach and strategic partnerships: https://icc-imm-website.vercel.app/#synergasies
+- Participation and contact: https://icc-imm-website.vercel.app/#participation
+- Article: https://icc-imm-website.vercel.app/library/new-reality-management/
+- Insight: https://icc-imm-website.vercel.app/library/ai-marketing-competitiveness/
+- Policy note: https://icc-imm-website.vercel.app/library/business-experience-policy-note/
+
+Official contact:
+- Email: director-imm@iccwbo.gr
+- ICC Hellas: https://www.iccwbo.gr/
+- International Chamber of Commerce: https://iccwbo.org/
