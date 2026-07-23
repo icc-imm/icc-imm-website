@@ -654,6 +654,17 @@ p {
   transition: box-shadow 180ms ease, transform 180ms ease;
 }
 
+.event-card__link {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  color: inherit;
+}
+
+.event-card--featured {
+  border-bottom-color: var(--navy-700);
+}
+
 .event-card:hover {
   box-shadow: var(--shadow);
   transform: translateY(-4px);
@@ -674,6 +685,21 @@ p {
 
 .event-card h3 {
   font-size: 1.45rem;
+}
+
+.event-card__details {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.1rem 0 1.5rem;
+  padding: 0;
+  color: var(--slate);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.event-card__details strong {
+  color: var(--navy-900);
 }
 
 .event-card .text-link {
