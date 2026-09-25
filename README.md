@@ -1,6 +1,6 @@
-# ICC Hellas Institute of Management & Marketing
+# ICC Institute of Management, Marketing & Leadership
 
-Responsive institutional website for the ICC Hellas Institute of Management & Marketing.
+Responsive institutional website for the ICC Hellas Institute of Management, Marketing & Leadership.
 The project uses HTML, CSS, vanilla JavaScript and Vite.
 
 ## Requirements
@@ -69,6 +69,11 @@ npm run preview
 |   |-- new-reality-management/
 |   |-- ai-marketing-competitiveness/
 |   `-- business-experience-policy-note/
+|-- events/
+|   `-- leadership-2026/
+|-- api/
+|   |-- registrations.js
+|   `-- admin/
 |-- public/
 |   `-- images/
 |       |-- imm-logo.png
@@ -118,6 +123,46 @@ Install command: npm install
 
 The included `vercel.json` already defines the Vite framework, build command and output
 directory.
+
+### Event registration backend
+
+The event page is available at `/events/leadership-2026/`. Its public registration form
+stays disabled until all required server-side environment variables are configured in
+Vercel under **Settings > Environment Variables**:
+
+```text
+POSTGRES_URL       Neon/Vercel Postgres connection string
+RESEND_API_KEY     Resend API key
+RESEND_FROM        Sender on a verified domain
+ADMIN_API_KEY      Long random secret for staff-only endpoints
+EVENT_PROGRAM_URL  Optional URL of the approved final programme PDF
+```
+
+Use `.env.example` as the local reference. Never commit real values. After configuring
+the variables, redeploy and verify `/api/registrations?health=1` returns `{"ready":true}`.
+The database table is created automatically on the first valid registration.
+
+The sender domain must be verified in Resend before registrations open. Registration
+confirmation is sent only to the visitor, while new-registration notification is sent
+only to the two configured ICC addresses in the server code.
+
+Authorized staff can download CSV by sending `Authorization: Bearer ADMIN_API_KEY` to:
+
+```text
+GET /api/admin/registrations.csv
+```
+
+The programme and reminder campaigns use the same authorization header. Each recipient
+is marked after a successful delivery, preventing the same campaign from being sent twice:
+
+```text
+POST /api/admin/send-event-email   {"type":"program"}
+POST /api/admin/send-event-email   {"type":"reminder"}
+```
+
+Before enabling the form, ICC must approve the privacy notice, the 12-month retention
+proposal, the final list of data processors, and the spelling of the keynote speaker's
+surname.
 
 ### Deploy with Netlify
 

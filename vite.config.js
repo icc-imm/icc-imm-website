@@ -14,6 +14,7 @@ export default defineConfig({
         management: resolve(rootDir, "library/new-reality-management/index.html"),
         aiMarketing: resolve(rootDir, "library/ai-marketing-competitiveness/index.html"),
         policyNote: resolve(rootDir, "library/business-experience-policy-note/index.html"),
+        leadershipEvent: resolve(rootDir, "events/leadership-2026/index.html"),
       },
     },
   },

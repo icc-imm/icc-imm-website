@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ICC IMM Hellas//Leadership 2026//EL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:leadership-2026@icc-imm-website.vercel.app
+DTSTAMP:20260925T090000Z
+DTSTART;TZID=Europe/Athens:20261008T173000
+DTEND;TZID=Europe/Athens:20261008T203000
+SUMMARY:Leadership in Times of Change / Ηγεσία σε Εποχές Αλλαγής
+DESCRIPTION:1η Επίσημη Δημόσια Εκδήλωση του ICC IMM Hellas. Η κεντρική ομιλία θα πραγματοποιηθεί στα αγγλικά.
+LOCATION:Βιοτεχνικό Επιμελητήριο Αθηνών\, Ακαδημίας 18\, Αθήνα
+URL:https://icc-imm-website.vercel.app/events/leadership-2026/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR
