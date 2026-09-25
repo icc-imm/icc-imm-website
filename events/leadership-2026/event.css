@@ -178,7 +178,7 @@
 
 .speaker-spotlight {
   display: grid;
-  grid-template-columns: minmax(118px, 0.72fr) minmax(0, 1fr);
+  grid-template-columns: minmax(190px, 1.35fr) minmax(0, 0.85fr);
   overflow: hidden;
   margin: 0;
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -192,9 +192,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 210px;
-  object-fit: cover;
-  object-position: center top;
+  object-fit: contain;
+  object-position: center;
+  background: #f4f1ed;
 }
 
 .speaker-spotlight figcaption {
@@ -666,11 +666,11 @@
   }
 
   .speaker-spotlight {
-    grid-template-columns: 126px minmax(0, 1fr);
+    grid-template-columns: 180px minmax(0, 1fr);
   }
 
   .speaker-spotlight img {
-    min-height: 205px;
+    min-height: 0;
   }
 
   .event-footer__inner {
