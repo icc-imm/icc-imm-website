@@ -131,7 +131,7 @@ stays disabled until all required server-side environment variables are configur
 Vercel under **Settings > Environment Variables**:
 
 ```text
-POSTGRES_URL       Neon/Vercel Postgres connection string
+POSTGRES_URL       Neon/Vercel Postgres connection string (DATABASE_URL is also accepted)
 RESEND_API_KEY     Resend API key
 RESEND_FROM        Sender on a verified domain
 ADMIN_API_KEY      Long random secret for staff-only endpoints

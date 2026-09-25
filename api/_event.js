@@ -12,14 +12,15 @@ export const json = (response, status, body) => {
 };
 
 export const configuration = () => ({
-  database: Boolean(process.env.POSTGRES_URL),
+  database: Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL),
   email: Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM),
   admin: Boolean(process.env.ADMIN_API_KEY),
 });
 
 export const getDatabase = () => {
-  if (!process.env.POSTGRES_URL) throw new Error("POSTGRES_URL is not configured");
-  return neon(process.env.POSTGRES_URL);
+  const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+  if (!databaseUrl) throw new Error("POSTGRES_URL or DATABASE_URL is not configured");
+  return neon(databaseUrl);
 };
 
 export const ensureSchema = async (sql) => {
