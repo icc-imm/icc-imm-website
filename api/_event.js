@@ -4,6 +4,7 @@ export const EVENT_URL = "https://icc-imm-website.vercel.app/events/leadership-2
 export const EVENT_TITLE = "Leadership in Times of Change / Ηγεσία σε Εποχές Αλλαγής";
 export const PRIVACY_NOTICE_VERSION = "2026-09-25-draft-1";
 export const NOTIFICATION_RECIPIENTS = ["director-imm@iccwbo.gr", "iccgr@otenet.gr"];
+export const RESEND_FROM = "ICC IMM <events@mail.iccwbo.gr>";
 
 export const json = (response, status, body) => {
   response.status(status).setHeader("Content-Type", "application/json; charset=utf-8");
@@ -13,7 +14,7 @@ export const json = (response, status, body) => {
 
 export const configuration = () => ({
   database: Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL),
-  email: Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM),
+  email: Boolean(process.env.RESEND_API_KEY),
   admin: Boolean(process.env.ADMIN_API_KEY),
 });
 
@@ -53,18 +54,22 @@ const escapeHtml = (value = "") =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 
-export const sendEmail = async ({ to, subject, html }) => {
-  if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM) {
+export const sendEmail = async ({ to, subject, html, idempotencyKey }) => {
+  if (!process.env.RESEND_API_KEY) {
     throw new Error("Email service is not configured");
   }
 
+  const headers = {
+    Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+    "Content-Type": "application/json",
+  };
+
+  if (idempotencyKey) headers["Idempotency-Key"] = idempotencyKey;
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ from: process.env.RESEND_FROM, to, subject, html }),
+    headers,
+    body: JSON.stringify({ from: RESEND_FROM, to, subject, html }),
   });
 
   if (!response.ok) {

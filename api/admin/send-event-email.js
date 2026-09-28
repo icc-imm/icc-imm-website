@@ -45,7 +45,11 @@ export default async function handler(request, response) {
     for (const recipient of recipients) {
       try {
         const content = campaignContent(type, recipient.full_name);
-        await sendEmail({ to: [recipient.email], ...content });
+        await sendEmail({
+          to: [recipient.email],
+          ...content,
+          idempotencyKey: `leadership-2026-${recipient.id}-${type}`,
+        });
         if (type === "program") {
           await sql`UPDATE event_registrations SET program_sent_at = NOW() WHERE id = ${recipient.id} AND program_sent_at IS NULL`;
         } else {

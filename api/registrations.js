@@ -112,11 +112,13 @@ export default async function handler(request, response) {
           to: [email],
           subject: "Επιβεβαίωση εγγραφής | Leadership in Times of Change",
           html: confirmationEmail(fullName),
+          idempotencyKey: `${EVENT_KEY}-${registrationId}-confirmation`,
         });
         participantEmailSent = true;
         await sql`UPDATE event_registrations SET confirmation_sent_at = NOW() WHERE id = ${registrationId}`;
       } catch (error) {
         emailError = `Confirmation: ${error.message}`;
+        console.error("Registration confirmation email failed", { registrationId, error });
       }
 
       try {
@@ -124,16 +126,22 @@ export default async function handler(request, response) {
           to: NOTIFICATION_RECIPIENTS,
           subject: `Νέα εγγραφή εκδήλωσης: ${fullName}`,
           html: notificationEmail({ fullName, email, organization, jobTitle, marketingConsent }),
+          idempotencyKey: `${EVENT_KEY}-${registrationId}-notification`,
         });
         notificationSent = true;
         await sql`UPDATE event_registrations SET notification_sent_at = NOW() WHERE id = ${registrationId}`;
       } catch (error) {
         emailError += `${emailError ? " | " : ""}Notification: ${error.message}`;
+        console.error("Registration notification email failed", { registrationId, error });
       }
     }
 
     if (emailError) {
-      await sql`UPDATE event_registrations SET email_error = ${emailError.slice(0, 1000)} WHERE id = ${registrationId}`;
+      try {
+        await sql`UPDATE event_registrations SET email_error = ${emailError.slice(0, 1000)} WHERE id = ${registrationId}`;
+      } catch (error) {
+        console.error("Registration email error could not be persisted", { registrationId, error });
+      }
     }
 
     return json(response, 201, {

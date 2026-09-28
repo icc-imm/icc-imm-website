@@ -126,21 +126,20 @@ directory.
 
 ### Event registration backend
 
-The event page is available at `/events/leadership-2026/`. Its public registration form
-stays disabled until all required server-side environment variables are configured in
-Vercel under **Settings > Environment Variables**:
+The event page is available at `/events/leadership-2026/`. Configure the relevant
+server-side environment variables in Vercel under **Settings > Environment Variables**:
 
 ```text
-POSTGRES_URL       Neon/Vercel Postgres connection string (DATABASE_URL is also accepted)
-RESEND_API_KEY     Resend API key
-RESEND_FROM        Sender on a verified domain
-ADMIN_API_KEY      Long random secret for staff-only endpoints
-EVENT_PROGRAM_URL  Optional URL of the approved final programme PDF
+POSTGRES_URL       Required for registrations (DATABASE_URL is also accepted)
+RESEND_API_KEY     Required for registration emails (sender: ICC IMM <events@mail.iccwbo.gr>)
+ADMIN_API_KEY      Optional; protects staff-only CSV and campaign endpoints
+EVENT_PROGRAM_URL  Optional; approved final programme PDF used by the programme campaign
 ```
 
 Use `.env.example` as the local reference. Never commit real values. After configuring
 the variables, redeploy and verify `/api/registrations?health=1` returns `{"ready":true}`.
-The database table is created automatically on the first valid registration.
+The database table is created automatically by the first registration API request or
+health check.
 
 The sender domain must be verified in Resend before registrations open. Registration
 confirmation is sent only to the visitor, while new-registration notification is sent
