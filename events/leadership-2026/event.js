@@ -1,38 +1,3 @@
-const countdown = document.querySelector("[data-countdown]");
-
-if (countdown) {
-  const target = new Date(countdown.dataset.eventTime).getTime();
-  const fields = {
-    days: countdown.querySelector("[data-days]"),
-    hours: countdown.querySelector("[data-hours]"),
-    minutes: countdown.querySelector("[data-minutes]"),
-    seconds: countdown.querySelector("[data-seconds]"),
-  };
-  const note = document.querySelector("[data-countdown-note]");
-
-  const renderCountdown = () => {
-    const remaining = Math.max(0, target - Date.now());
-    const totalSeconds = Math.floor(remaining / 1000);
-    const values = {
-      days: Math.floor(totalSeconds / 86400),
-      hours: Math.floor((totalSeconds % 86400) / 3600),
-      minutes: Math.floor((totalSeconds % 3600) / 60),
-      seconds: totalSeconds % 60,
-    };
-
-    Object.entries(values).forEach(([key, value]) => {
-      fields[key].textContent = String(value).padStart(2, "0");
-    });
-
-    if (remaining === 0 && note) {
-      note.textContent = "Η εκδήλωση έχει ξεκινήσει ή ολοκληρωθεί.";
-    }
-  };
-
-  renderCountdown();
-  window.setInterval(renderCountdown, 1000);
-}
-
 document.querySelectorAll("[data-scroll-top]").forEach((button) => {
   button.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 });
