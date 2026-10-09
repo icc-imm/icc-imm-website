@@ -520,6 +520,19 @@
   transform: scale(1.025);
 }
 
+.photo-credits {
+  margin: 1.25rem 0 0;
+  color: #6c7d92;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+
+.photo-credits strong {
+  color: var(--event-blue-dark);
+  font-weight: 750;
+}
+
 .programme-list {
   margin: 0;
   padding: 0;
